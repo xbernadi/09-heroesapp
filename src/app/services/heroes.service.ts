@@ -1,32 +1,32 @@
 import { Injectable } from '@angular/core';
 // Peticions HTTP
-import { Http, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Heroe } from '../interfaces/heroe.interface';
-import { Observable, Subject, ReplaySubject, from, of, range } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+
+
+import { from } from 'rxjs';
+import { Headers } from '@angular/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HeroesService {
 
-  heroesURL: string = 'https://heroesapp-76188.firebaseio.com/heroes.json';
+  HeroesURL = 'https://heroesapp-76188.firebaseio.com/heroes.json';
 
-  constructor( private http: Http ) { }
+  constructor( private http: HttpClient ) { }
 
   nuevoHeroe ( heroe: Heroe ) {
+    const httpOptions = {
+      headers: new HttpHeaders ({
+        'Content-type': 'application/json'
+      })
+    };
 
-    let body = JSON.stringify ( heroe );
-    let headers = new Headers ({
-      'Content-Type': 'application:json'
-    });
-
-   /* return this.http.post ( this.heroesURL, body, { headers } )
-            .map (res => {
-              console.log (res.json());
-              return res.json();
-            });*/
+    return this.http.post (this.HeroesURL, heroe, httpOptions)
+            .pipe(map( data => data['name'] ));
 
   }
 }
